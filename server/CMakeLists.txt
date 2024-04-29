@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(
-  Multithread-TCP-Client
+  Multithread-TCP-Server
   VERSION 1.0.0
   DESCRIPTION ""
   LANGUAGES CXX)
@@ -14,9 +14,9 @@ include(GNUInstallDirs)
 # Build Executable
 add_executable(
   ${PROJECT_NAME}
-  client-main.cpp
-  src/tcp-client.cpp
-  src/tcp-client-exception.cpp)
+  server-main.cpp
+  src/tcp-server.cpp
+  src/tcp-server-exception.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 
@@ -46,7 +46,6 @@ myproject_set_project_warnings(
   ""
   "X")
 add_compile_options(-O2) # Required to Fortify Source
-myproject_enable_hardening(${PROJECT_NAME} TRUE FALSE)
 add_clang_format_target(RUN_CLANG-FORMAT ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_compile_options(-pipe -fPIC)
@@ -54,9 +53,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
   add_compile_options(-NDDEBUG)
 endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Debug") 
-  myproject_enable_cppcheck(FALSE "X")
+  #myproject_enable_cppcheck(FALSE "X")
   #myproject_enable_clang_tidy(${PROJECT_NAME} FALSE)
-  myproject_enable_include_what_you_use()
+  #myproject_enable_include_what_you_use()
   myproject_enable_coverage(${PROJECT_NAME})
   myproject_enable_sanitizers(
     ${PROJECT_NAME}
