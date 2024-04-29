@@ -1,0 +1,14 @@
+# Vscode Extensions
+.vscode/
+.trunk/
+
+build/
+server/
+private_credentials.h
+
+# Cmake Files
+CMakeCache.txt
+CMakeFiles/
+_deps/
+Makefile
+cmake_install.cmake
