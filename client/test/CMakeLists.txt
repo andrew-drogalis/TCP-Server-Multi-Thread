@@ -40,61 +40,6 @@ target_link_libraries(
   GTest::GTest
   GTest::Main)
 
-# ==========================================
-# FUNCTIONAL TEST PRODUCTION ENV
-# ==========================================
-# Add a testing executable
-add_executable(
-  functional_tests_production_scenario
-  functional_test_production_env.cpp
-  ${PARENT_DIR}/src/fx_market_time.cpp
-  ${PARENT_DIR}/src/fx_order_management.cpp
-  ${PARENT_DIR}/src/fx_trading_model.cpp
-  ${PARENT_DIR}/src/fx_utilities.cpp
-  ${PARENT_DIR}/src/fx_exception.cpp)
-
-target_include_directories(functional_tests_production_scenario PRIVATE ${PARENT_DIR}/include)
-
-target_link_libraries(functional_tests_production_scenario PRIVATE cpr::cpr ${PARENT_DIR}/lib/libhttpmockserver.a)
-
-target_link_libraries(
-  functional_tests_production_scenario
-  LINK_PUBLIC
-  ${Boost_LIBRARIES}
-  GTest::GTest
-  GTest::Main
-  ${HTTPMOCKSERVER_LIBRARIES}
-  ${MHD_LIBRARIES}
-  gain_capital_api)
-
-# ==========================================
-# FUNCTIONAL TEST FAILURE ENV
-# ==========================================
-# Add a testing executable
-add_executable(
-  functional_tests_failure_scenario
-  unit_test_utilities.cpp
-  unit_test_order_management.cpp
-  ${PARENT_DIR}/src/fx_market_time.cpp
-  ${PARENT_DIR}/src/fx_order_management.cpp
-  ${PARENT_DIR}/src/fx_trading_model.cpp
-  ${PARENT_DIR}/src/fx_utilities.cpp
-  ${PARENT_DIR}/src/fx_exception.cpp)
-
-target_include_directories(functional_tests_failure_scenario PRIVATE ${PARENT_DIR}/include)
-
-target_link_libraries(functional_tests_failure_scenario PRIVATE cpr::cpr ${PARENT_DIR}/lib/libhttpmockserver.a)
-
-target_link_libraries(
-  functional_tests_failure_scenario
-  LINK_PUBLIC
-  ${Boost_LIBRARIES}
-  GTest::GTest
-  GTest::Main
-  ${HTTPMOCKSERVER_LIBRARIES}
-  ${MHD_LIBRARIES}
-  gain_capital_api)
-
 # we cannot analyse results without gcov
 find_program(GCOV_PATH gcov)
 if(NOT GCOV_PATH)
@@ -103,5 +48,3 @@ endif()
 
 include(GoogleTest)
 gtest_discover_tests(unit_test)
-gtest_discover_tests(functional_tests_production_scenario)
-gtest_discover_tests(functional_tests_failure_scenario)

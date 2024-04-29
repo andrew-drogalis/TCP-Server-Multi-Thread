@@ -34,7 +34,6 @@ include(${PARENT_DIR}/cmake/CompilerWarnings.cmake)
 include(${PARENT_DIR}/cmake/Sanitizers.cmake)
 include(${PARENT_DIR}/cmake/StaticAnalyzers.cmake)
 include(${PARENT_DIR}/cmake/Tests.cmake)
-include(${PARENT_DIR}/cmake/Hardening.cmake)
 include(${PARENT_DIR}/cmake/PreventInSourceBuilds.cmake)
 include(${PARENT_DIR}/cmake/ClangFormat.cmake)
 
