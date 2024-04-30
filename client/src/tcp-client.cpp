@@ -9,24 +9,26 @@
 #include <sys/socket.h>// for AF_INET, connect, recv, send, socket, SOCK_S...
 #include <unistd.h>    // for close
 
-#include <cstring> // for memcpy, memset
-#include <iostream>// for operator<<, basic_ostream, cout, basic_ostre...
-#include <string>  // for char_traits, basic_string, getline, operator<<
+#include <cstring>        // for memcpy, memset
+#include <expected>       // for expected
+#include <iostream>       // for operator<<, basic_ostream, cout, basic_ostre...
+#include <source_location>// for source_location
+#include <string>         // for char_traits, basic_string, getline, operator<<
 
 #include "tcp-client-exception.h"// for TCPClientException
 
 namespace tcpclient
 {
 
-TCPClient::TCPClient(int port, int buffer_size, struct hostent* server_ip) {}
+TCPClient::TCPClient(hostent* server_ip, int port, int buffer_size) server_ip(server_ip), port(port), buffer_size(buffer_size) {}
 
-bool TCPClient::start_client()
+std::expected<bool, TCPClientException> TCPClient::start_client()
 {
     int sockFD = socket(AF_INET, SOCK_STREAM, 0);
     if (sockFD == -1)
     {
-        std::cerr << "Failed to connect to Socket.";
-        return false;
+        return std::expected<bool, TCPClientException> {std::unexpect, std::source_location::current().function_name(),
+                                                        "Failed to connect to Socket."};
     }
 
     struct sockaddr_in server;
@@ -37,7 +39,8 @@ bool TCPClient::start_client()
     int connectRes = connect(sockFD, (sockaddr*)&server, sizeof(server));
     if (connectRes == -1)
     {
-        return false;
+        clean_up_socket(sockFD);
+        return std::expected<bool, TCPClientException> {std::unexpect, std::source_location::current().function_name(), "Failed to connect"};
     }
 
     std::cout << "Established Connection to: " << inet_ntoa(server.sin_addr) << " on port: " << port << "\n\n";
@@ -73,8 +76,16 @@ bool TCPClient::start_client()
         }
     }
 
-    close(sockFD);
-    return true;
+    clean_up_socket(sockFD);
+    return std::expected<bool, TCPClientException> {true};
+}
+
+void TCPClient::clean_up_socket(int socket_FD)
+{
+    if (socket_FD != -1)
+    {
+        close(socket_FD);
+    }
 }
 
 }// namespace tcpclient

@@ -18,24 +18,29 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${GTEST_INCLUDE_DIRS})
 
+include(${PARENT_DIR}/cmake/CompilerWarnings.cmake)
 include(${PARENT_DIR}/cmake/Tests.cmake)
-include(${PARENT_DIR}/cmake/Hardening.cmake)
 include(${PARENT_DIR}/cmake/PreventInSourceBuilds.cmake)
 include(${PARENT_DIR}/cmake/ClangFormat.cmake)
+
+myproject_assure_out_of_source_builds()
+myproject_set_project_warnings(${PROJECT_NAME} TRUE "X" "" "" "X")
+add_clang_format_target(RUN_CLANG-FORMAT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # ==========================================
 # UNIT TESTS
 # ==========================================
 # Add a testing executable
 add_executable(
-  unit_test
-  unit_test.cpp)
+  all_tests
+  unit_test.cpp
+  functional_test.cpp)
 
 
-target_include_directories(unit_test PRIVATE ${PARENT_DIR}/include)
+target_include_directories(all_tests PRIVATE ${PARENT_DIR}/client/include ${PARENT_DIR}/server/include)
 
 target_link_libraries(
-  unit_test
+  all_tests
   LINK_PUBLIC
   GTest::GTest
   GTest::Main)
@@ -47,4 +52,4 @@ if(NOT GCOV_PATH)
 endif()
 
 include(GoogleTest)
-gtest_discover_tests(unit_test)
+gtest_discover_tests(all_tests)

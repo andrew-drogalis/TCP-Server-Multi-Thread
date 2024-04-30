@@ -38,14 +38,8 @@ include(${PARENT_DIR}/cmake/PreventInSourceBuilds.cmake)
 include(${PARENT_DIR}/cmake/ClangFormat.cmake)
 
 myproject_assure_out_of_source_builds()
-myproject_set_project_warnings(
-  ${PROJECT_NAME}
-  TRUE
-  "X"
-  ""
-  ""
-  "X")
-add_compile_options(-O2) # Required to Fortify Source
+myproject_set_project_warnings(${PROJECT_NAME} TRUE "X" "" "" "X")
+
 add_clang_format_target(RUN_CLANG-FORMAT ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_compile_options(-pipe -fPIC)

@@ -4,7 +4,9 @@
 #ifndef TCP_SERVER_H
 #define TCP_SERVER_H
 
-#include <string>// for basic_string
+#include <expected>// for expected
+
+#include "tcp-server-exception.h"// for TCPServerException
 
 namespace tcpserver
 {
@@ -15,14 +17,16 @@ class TCPServer
   public:
     TCPServer() = default;
 
-    TCPServer(int PORT, int max_events, int max_clients);
+    TCPServer(int port, int max_events, int max_clients, int buffer_size);
 
-    void start_server();
+    std::expected<bool, TCPServerException> start_server();
 
-    void* handle_client_request(std::string client_request);
+    void clean_up_socket_epoll(int socket_FD, int epoll_FD);
+
+    static void handle_client(int clientFd, int buffer_size);
 
   private:
-    int PORT, max_events, max_clients;
+    int port, max_events, max_clients, buffer_size;
 };
 
 }// namespace tcpserver

@@ -11,19 +11,20 @@
 namespace tcpserver
 {
 
-bool validateMainParameters(int argc, char* argv[], int& PORT, int& max_clients, int& max_events)
+bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS, int& MAX_EVENTS, int& BUFFER_SIZE)
 {
+    if (argc > 9)
+    {
+        std::cerr << "Too Many Arguments - Only (4) Arguments: -p [Port Number] -c [Max Clients] -e [Max Events] -b [Buffer Size]\n";
+        return false;
+    }
     if (argc == 1)
     {
         return true;
     }
-    if (argc > 9)
-    {
-        std::cerr << "Too Many Arguments - Only (3) Arguments: -p [Port Number] -c [Max Clients] -e [Max Events]\n";
-        return false;
-    }
+
     int c;
-    while ((c = getopt(argc, argv, "p:c:e:")) != -1)
+    while ((c = getopt(argc, argv, "p:c:e:b:")) != -1)
     {
         switch (c)
         {
@@ -34,7 +35,7 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& max_clients,
             }
             catch (std::invalid_argument const& e)
             {
-                std::cout << " ";
+                std::cerr << "Provide Integer for PORT. " << e.what();
                 return false;
             }
             break;
@@ -42,11 +43,11 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& max_clients,
         case 'c': {
             try
             {
-                max_clients = std::stoi(optarg);
+                MAX_CLIENTS = std::stoi(optarg);
             }
             catch (std::invalid_argument const& e)
             {
-                std::cout << " ";
+                std::cerr << "Provide Integer for MAX_CLIENTS. " << e.what();
                 return false;
             }
             break;
@@ -54,22 +55,34 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& max_clients,
         case 'e': {
             try
             {
-                max_events = std::stoi(optarg);
+                MAX_EVENTS = std::stoi(optarg);
             }
             catch (std::invalid_argument const& e)
             {
-                std::cout << " ";
+                std::cerr << "Provide Integer for MAX_EVENTS. " << e.what();
+                return false;
+            }
+            break;
+        }
+        case 'b': {
+            try
+            {
+                BUFFER_SIZE = std::stoi(optarg);
+            }
+            catch (std::invalid_argument const& e)
+            {
+                std::cerr << "Provide Integer for BUFFER_SIZE. " << e.what();
                 return false;
             }
             break;
         }
         default:
-            std::cerr << "Incorrect Argument. Flags are -p [Port Number] -c [Max Clients] -e [Max Events]\n";
+            std::cerr << "Incorrect Argument. Flags are -p [Port Number] -c [Max Clients] -e [Max Events] -b [Buffer Size]\n";
             return false;
         }
     }
-    std::print("Port: {}, Max Clients: {}, MAx Events: {}", PORT, max_clients, max_events);
-
+    std::print("Port: {}, Max Clients: {}, Max Events: {}, Buffer Size: {}", PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE);
+    // ------------------
     return true;
 }
 

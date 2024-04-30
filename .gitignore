@@ -10,4 +10,3 @@ CMakeFiles/
 _deps/
 Makefile
 cmake_install.cmake
-server/src/tcp-server.cpp

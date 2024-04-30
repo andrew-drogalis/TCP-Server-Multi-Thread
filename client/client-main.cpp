@@ -8,26 +8,26 @@
 
 int main(int argc, char* argv[])
 {
-    int port_number, buffer_size;
-    struct hostent* server_ip;
+    int PORT = 54000, BUFFER_SIZE = 1024;
+    struct hostent* SERVER_IP;
 
-    bool validate_response = tcpclient::validateMainParameters(argc, argv, port_number, buffer_size, server_ip);
-
-    if (! validate_response)
+    if (! tcpclient::validateMainParameters(argc, argv, SERVER_IP, PORT, BUFFER_SIZE))
     {
         return 1;
     }
+    // -------------------
+    tcpclient::TCPClient tcpClient {SERVER_IP, PORT, BUFFER_SIZE};
 
-    tcpclient::TCPClient tcpClient {port_number, buffer_size, server_ip};
-
-    bool tcp_client_response = tcpClient.start_client();
+    auto tcp_client_response = tcpClient.start_client();
 
     if (! tcp_client_response)
     {
+        std::cout << "Error Location: " << tcp_client_response.error().where() << '\n';
+        std::cout << tcp_client_response.error().what() << '\n';
         return 1;
     }
 
     std::cout << "Connect Closed Successfully.";
-
+    // -------------------
     return 0;
 }

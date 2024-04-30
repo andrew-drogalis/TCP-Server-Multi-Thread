@@ -4,6 +4,10 @@
 #ifndef TCP_CLIENT_H
 #define TCP_CLIENT_H
 
+#include <expected>// for expected
+
+#include "tcp-client-exception.h"// for TCPClientException
+
 namespace tcpclient
 {
 
@@ -11,15 +15,16 @@ class TCPClient
 {
 
   public:
-    TCPClient() = delete;
+    TCPClient() = default;
 
-    TCPClient(int port, int buffer_size, struct hostent* server_ip);
+    TCPClient(struct hostent* server_ip, int port, int buffer_size);
 
-    bool start_client();
+    std::expected<bool, TCPClientException> start_client();
 
-  private:
+    void clean_up_socket(int socket_FD);
+
+        private : struct hostent* server_ip;
     int port, buffer_size;
-    struct hostent* server_ip;
 };
 
 }// namespace tcpclient
