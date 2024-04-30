@@ -2,21 +2,22 @@
 // GNU License
 
 #include <iostream>// for operator<<, basic_ostream, cout
+#include <string>  // for basic_string
 
 #include "main-utilities-client.hpp"// for validateMainParameters
 #include "tcp-client.h"             // for TCPClient
 
 int main(int argc, char* argv[])
 {
+    std::string IP_ADDRESS = "127.0.0.1";
     int PORT = 54000, BUFFER_SIZE = 1024;
-    struct hostent* SERVER_IP;
 
-    if (! tcpclient::validateMainParameters(argc, argv, SERVER_IP, PORT, BUFFER_SIZE))
+    if (! tcpclient::validateMainParameters(argc, argv, IP_ADDRESS, PORT, BUFFER_SIZE))
     {
         return 1;
     }
     // -------------------
-    tcpclient::TCPClient tcpClient {SERVER_IP, PORT, BUFFER_SIZE};
+    tcpclient::TCPClient tcpClient {IP_ADDRESS, PORT, BUFFER_SIZE};
 
     auto tcp_client_response = tcpClient.start_client();
 
@@ -27,7 +28,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    std::cout << "Connect Closed Successfully.";
+    std::cout << "Connection Closed Successfully.\n";
     // -------------------
     return 0;
 }

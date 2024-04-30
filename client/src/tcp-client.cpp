@@ -20,12 +20,12 @@
 namespace tcpclient
 {
 
-TCPClient::TCPClient(hostent* server_ip, int port, int buffer_size) server_ip(server_ip), port(port), buffer_size(buffer_size) {}
+TCPClient::TCPClient(std::string ip_address, int port, int buffer_size) : ip_address(ip_address), port(port), buffer_size(buffer_size) {}
 
 std::expected<bool, TCPClientException> TCPClient::start_client()
 {
-    int sockFD = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockFD == -1)
+    int socket_FD = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket_FD == -1)
     {
         return std::expected<bool, TCPClientException> {std::unexpect, std::source_location::current().function_name(),
                                                         "Failed to connect to Socket."};
@@ -34,49 +34,49 @@ std::expected<bool, TCPClientException> TCPClient::start_client()
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
-    memcpy(&server.sin_addr, server_ip->h_addr, server_ip->h_length);
+    inet_pton(AF_INET, ip_address.c_str(), &server.sin_addr);
 
-    int connectRes = connect(sockFD, (sockaddr*)&server, sizeof(server));
-    if (connectRes == -1)
+    if (connect(socket_FD, (sockaddr*)&server, sizeof(server)) == -1)
     {
-        clean_up_socket(sockFD);
-        return std::expected<bool, TCPClientException> {std::unexpect, std::source_location::current().function_name(), "Failed to connect"};
+        clean_up_socket(socket_FD);
+        return std::expected<bool, TCPClientException> {std::unexpect, std::source_location::current().function_name(),
+                                                        "Failed to open connection to IP Address on specified port"};
     }
-
+    // ------------------
     std::cout << "Established Connection to: " << inet_ntoa(server.sin_addr) << " on port: " << port << "\n\n";
 
-    // While loop:
     char buf[buffer_size];
-    std::string userInput;
-
+    std::string user_input;
     while (true)
     {
-        // Enter lines of text
         std::cout << "> ";
-        getline(std::cin, userInput);
+        getline(std::cin, user_input);
 
-        // Send to server
-        int sendRes = send(sockFD, userInput.c_str(), userInput.size() + 1, 0);
-        if (sendRes == -1)
+        if (user_input == "EXIT")
         {
-            std::cout << "Failed to send to server!\n";
-            continue;
+            break;
         }
 
-        // Wait for response
-        memset(buf, 0, buffer_size);
-        int bytesReceived = recv(sockFD, buf, buffer_size, 0);
-        if (bytesReceived == -1)
+        int send_result = send(socket_FD, user_input.c_str(), user_input.size() + 1, 0);
+        if (send_result == -1)
         {
-            std::cout << "There was an error getting response from server\n";
+            std::cout << "Failed to send message to server.\n";
+            continue;
+        }
+        // ------------------
+        memset(buf, 0, buffer_size);
+        int bytes_received = recv(socket_FD, buf, buffer_size, 0);
+        if (bytes_received == -1)
+        {
+            std::cout << "Failed to get response from server.\n";
         }
         else
         {
-            std::cout << "SERVER> " << std::string(buf, bytesReceived) << "\n";
+            std::cout << "Server Response> " << std::string(buf, bytes_received) << "\n";
         }
     }
-
-    clean_up_socket(sockFD);
+    // ------------------
+    clean_up_socket(socket_FD);
     return std::expected<bool, TCPClientException> {true};
 }
 

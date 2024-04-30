@@ -1,23 +1,22 @@
 // Copyright 2024, Andrew Drogalis
 // GNU License
 
-#include <netdb.h> // for gethostbyname, herror, hostent (ptr only)
-#include <stdio.h> // for NULL
 #include <unistd.h>// for optarg, getopt
 
 #include <iostream> // for operator<<, basic_ostream, cerr, cout
 #include <print>    // for print
+#include <regex>    // for regex, regex_match
 #include <stdexcept>// for invalid_argument
 #include <string>   // for stoi, basic_string
 
 namespace tcpclient
 {
 
-bool validateMainParameters(int argc, char* argv[], hostent* SERVER_IP, int& PORT, int BUFFER_SIZE)
+bool validateMainParameters(int argc, char* argv[], std::string& IP_ADDRESS, int& PORT, int& BUFFER_SIZE)
 {
     if (argc > 7)
     {
-        std::cerr << "Too Many Arguments - Only (3) Arguments: -i [IP Address], -p [Port Number] -b [Buffer Size]\n";
+        std::cerr << "Too Many Arguments - Only (3) Arguments: -i [IP Address] -p [Port Number] -b [Buffer Size]\n";
         return false;
     }
     if (argc == 1)
@@ -25,23 +24,31 @@ bool validateMainParameters(int argc, char* argv[], hostent* SERVER_IP, int& POR
         return true;
     }
 
+    std::regex ipv4("(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])");
+
     int c;
-    while ((c = getopt(argc, argv, "i:p:b:")) != -1)
+    while ((c = getopt(argc, argv, "p:b:i:")) != -1)
     {
         switch (c)
         {
-        case 'i':
-            if ((SERVER_IP = gethostbyname(optarg)) == NULL)
+        case 'i': {
+            IP_ADDRESS = optarg;
+            if (! regex_match(IP_ADDRESS, ipv4))
             {
-                herror(" gethostbyname ");
+                std::cerr << "Provide valid IPv4 address. e.g. 127.0.0.1";
                 return false;
             }
             break;
-
+        }
         case 'p': {
             try
             {
                 PORT = std::stoi(optarg);
+                if (PORT < 0 || PORT > 65535)
+                {
+                    std::cerr << "Provide Valid Port Number 0 - 65535.";
+                    return false;
+                }
             }
             catch (std::invalid_argument const& e)
             {
@@ -54,6 +61,11 @@ bool validateMainParameters(int argc, char* argv[], hostent* SERVER_IP, int& POR
             try
             {
                 BUFFER_SIZE = std::stoi(optarg);
+                if (BUFFER_SIZE < 0)
+                {
+                    std::cerr << "Provide Positive value for Buffer Size.";
+                    return false;
+                }
             }
             catch (std::invalid_argument const& e)
             {
@@ -63,11 +75,11 @@ bool validateMainParameters(int argc, char* argv[], hostent* SERVER_IP, int& POR
             break;
         }
         default:
-            std::cerr << "Incorrect Argument. Flags are -i [IP Address], -p [Port Number] -b [Buffer Size]\n";
+            std::cerr << "Incorrect Argument. Flags are -i [IP Address] -p [Port Number] -b [Buffer Size]\n";
             return false;
         }
     }
-    std::print("IP Address: {}, Port: {}, Buffer Size: {}", SERVER_IP->h_name, PORT, BUFFER_SIZE);
+    std::print("IP Address: {}, Port: {}, Buffer Size: {}", IP_ADDRESS, PORT, BUFFER_SIZE);
     // ------------------
     return true;
 }

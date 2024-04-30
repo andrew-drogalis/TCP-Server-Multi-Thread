@@ -23,10 +23,6 @@ include(${PARENT_DIR}/cmake/Tests.cmake)
 include(${PARENT_DIR}/cmake/PreventInSourceBuilds.cmake)
 include(${PARENT_DIR}/cmake/ClangFormat.cmake)
 
-myproject_assure_out_of_source_builds()
-myproject_set_project_warnings(${PROJECT_NAME} TRUE "X" "" "" "X")
-add_clang_format_target(RUN_CLANG-FORMAT ${CMAKE_CURRENT_SOURCE_DIR})
-
 # ==========================================
 # UNIT TESTS
 # ==========================================
@@ -34,8 +30,11 @@ add_clang_format_target(RUN_CLANG-FORMAT ${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(
   all_tests
   unit_test.cpp
-  functional_test.cpp)
-
+  functional_test.cpp
+  ${PARENT_DIR}/client/src/tcp-client-exception.cpp
+  ${PARENT_DIR}/client/src/tcp-client.cpp
+  ${PARENT_DIR}/server/src/tcp-server-exception.cpp
+  ${PARENT_DIR}/server/src/tcp-server.cpp)
 
 target_include_directories(all_tests PRIVATE ${PARENT_DIR}/client/include ${PARENT_DIR}/server/include)
 
@@ -44,6 +43,11 @@ target_link_libraries(
   LINK_PUBLIC
   GTest::GTest
   GTest::Main)
+
+# ==========================================
+myproject_assure_out_of_source_builds()
+myproject_set_project_warnings("all_tests" TRUE "X" "" "" "X")
+add_clang_format_target(RUN_CLANG-FORMAT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # we cannot analyse results without gcov
 find_program(GCOV_PATH gcov)

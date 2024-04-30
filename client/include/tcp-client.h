@@ -5,6 +5,7 @@
 #define TCP_CLIENT_H
 
 #include <expected>// for expected
+#include <string>  // for basic_string
 
 #include "tcp-client-exception.h"// for TCPClientException
 
@@ -17,13 +18,14 @@ class TCPClient
   public:
     TCPClient() = default;
 
-    TCPClient(struct hostent* server_ip, int port, int buffer_size);
+    TCPClient(std::string ip_address, int port, int buffer_size);
 
     std::expected<bool, TCPClientException> start_client();
 
     void clean_up_socket(int socket_FD);
 
-        private : struct hostent* server_ip;
+  private:
+    std::string ip_address;
     int port, buffer_size;
 };
 

@@ -32,6 +32,11 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS,
             try
             {
                 PORT = std::stoi(optarg);
+                if (PORT < 0 || PORT > 65535)
+                {
+                    std::cerr << "Provide Valid Port Number 0 - 65535.";
+                    return false;
+                }
             }
             catch (std::invalid_argument const& e)
             {
@@ -44,6 +49,11 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS,
             try
             {
                 MAX_CLIENTS = std::stoi(optarg);
+                if (MAX_CLIENTS < 0)
+                {
+                    std::cerr << "Provide Positive value for Max Clients.";
+                    return false;
+                }
             }
             catch (std::invalid_argument const& e)
             {
@@ -56,6 +66,11 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS,
             try
             {
                 MAX_EVENTS = std::stoi(optarg);
+                if (MAX_EVENTS < 0)
+                {
+                    std::cerr << "Provide Positive value for Max Events.";
+                    return false;
+                }
             }
             catch (std::invalid_argument const& e)
             {
@@ -68,6 +83,11 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS,
             try
             {
                 BUFFER_SIZE = std::stoi(optarg);
+                if (BUFFER_SIZE < 0)
+                {
+                    std::cerr << "Provide Positive value for Buffer Size.";
+                    return false;
+                }
             }
             catch (std::invalid_argument const& e)
             {

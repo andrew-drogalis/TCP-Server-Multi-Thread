@@ -26,7 +26,7 @@
     $ cd .. && cd client
     $ mkdir build
     $ cmake -S . -B build
-    $ cmake --build build --target Multithread-TCP-Client
+    $ cmake --build build --target TCP-Client
 ```
 
 ## License

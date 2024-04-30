@@ -18,9 +18,9 @@ int main(int argc, char* argv[])
     // -------------------
     tcpserver::TCPServer tcpServ {PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE};
 
-    auto server_response = tcpServ.start_server();
+    auto tcp_server_response = tcpServ.start_server();
 
-    if (! server_response)
+    if (! tcp_server_response)
     {
         std::cout << "Error Location: " << tcp_server_response.error().where() << '\n';
         std::cout << tcp_server_response.error().what() << '\n';

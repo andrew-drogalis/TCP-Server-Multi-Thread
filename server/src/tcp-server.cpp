@@ -26,13 +26,11 @@ TCPServer::TCPServer(int port, int max_events, int max_clients, int buffer_size)
 
 std::expected<bool, TCPServerException> TCPServer::start_server()
 {
-    // AF_INET: internet socket, Protocol: 0, oti einai TCP
-    // socket_file_descriptor
     int socket_FD = socket(AF_INET, SOCK_STREAM, 0);
-
     if (socket_FD == -1)
     {
-        return std::expected<bool, TCPServerException> {std::unexpect, std::source_location::current().function_name(), "Can't create socket"};
+        return std::expected<bool, TCPServerException> {std::unexpect, std::source_location::current().function_name(),
+                                                        "Failed to connect to Socket."};
     }
 
     struct sockaddr_in server;
@@ -43,10 +41,11 @@ std::expected<bool, TCPServerException> TCPServer::start_server()
     if (bind(socket_FD, (sockaddr*)&server, sizeof(server)) == -1)
     {
         clean_up_socket_epoll(socket_FD, -1);
-        return std::expected<bool, TCPServerException> {std::unexpect, std::source_location::current().function_name(), "Can't bind to IP/portd"};
+        return std::expected<bool, TCPServerException> {std::unexpect, std::source_location::current().function_name(),
+                                                        "Failed to open connection to IP Address on specified port"};
     }
-
-    std::cout << "Server was successfully initialised...\n";
+    // ------------------
+    std::cout << "Server is Online.\n";
 
     if (listen(socket_FD, max_clients) == -1)
     {
@@ -63,7 +62,6 @@ std::expected<bool, TCPServerException> TCPServer::start_server()
     }
 
     struct epoll_event event, events[max_events];
-    // Add server socket to epoll
     event.events = EPOLLIN;
     event.data.fd = socket_FD;
     if (epoll_ctl(epoll_FD, EPOLL_CTL_ADD, socket_FD, &event) == -1)
@@ -72,49 +70,46 @@ std::expected<bool, TCPServerException> TCPServer::start_server()
         return std::expected<bool, TCPServerException> {std::unexpect, std::source_location::current().function_name(),
                                                         "Failed to add server socket to epoll instance."};
     }
-
-    std::cout << "Listening for connections on port " << port << "\n";
+    // ------------------
+    std::cout << "Listening for connections on Port: " << port << '\n';
 
     while (true)
     {
-        int numEvents = epoll_wait(epoll_FD, events, max_events, -1);
-        if (numEvents == -1)
+        int num_events = epoll_wait(epoll_FD, events, max_events, -1);
+        if (num_events == -1)
         {
-            std::cerr << "Failed to wait for events." << std::endl;
-            break;
+            clean_up_socket_epoll(socket_FD, epoll_FD);
+            return std::expected<bool, TCPServerException> {std::unexpect, std::source_location::current().function_name(),
+                                                            "Failed wait for epoll events."};
         }
 
-        for (int i = 0; i < numEvents; ++i)
+        for (int i = 0; i < num_events; ++i)
         {
             if (events[i].data.fd == socket_FD)
             {
-                // Accept new client connection
-                struct sockaddr_in clientAddress;
-                socklen_t clientAddressLength = sizeof(clientAddress);
-                int client_FD = accept(socket_FD, (struct sockaddr*)&clientAddress, &clientAddressLength);
+                struct sockaddr_in client_address;
+                socklen_t client_address_length = sizeof(client_address);
+                int client_FD = accept(socket_FD, (struct sockaddr*)&client_address, &client_address_length);
                 if (client_FD == -1)
                 {
-                    std::cerr << "Failed to accept client connection." << std::endl;
+                    std::cerr << "Failed to accept client connection.\n";
                     continue;
                 }
 
-                // Add client socket to epoll
                 event.events = EPOLLIN;
                 event.data.fd = client_FD;
                 if (epoll_ctl(epoll_FD, EPOLL_CTL_ADD, client_FD, &event) == -1)
                 {
-                    std::cerr << "Failed to add client socket to epoll instance." << std::endl;
+                    std::cerr << "Failed to add client socket to epoll instance.\n";
                     close(client_FD);
                     continue;
                 }
 
-                // Create a new thread to handle the client connection
                 std::thread client_thread(handle_client, client_FD, buffer_size);
                 client_thread.detach();
             }
             else
             {
-                // Handle client data
                 int client_FD = events[i].data.fd;
                 std::thread client_thread(handle_client, client_FD, buffer_size);
                 client_thread.detach();
@@ -123,7 +118,6 @@ std::expected<bool, TCPServerException> TCPServer::start_server()
     }
     // -------------------
     clean_up_socket_epoll(socket_FD, epoll_FD);
-
     return std::expected<bool, TCPServerException> {true};
 }
 
