@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    std::cout << "Connection Closed Successfully.\n";
+    std::cout << "\nConnection Closed Successfully.\n";
     // -------------------
     return 0;
 }

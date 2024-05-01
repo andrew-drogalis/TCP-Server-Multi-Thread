@@ -24,7 +24,7 @@ TCPServer::TCPServer(int port, int max_events, int max_clients, int buffer_size)
 {
 }
 
-std::expected<bool, TCPServerException> TCPServer::start_server()
+std::expected<bool, TCPServerException> TCPServer::start_server() noexcept
 {
     int socket_FD = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_FD == -1)
@@ -45,6 +45,7 @@ std::expected<bool, TCPServerException> TCPServer::start_server()
                                                         "Failed to open connection to IP Address on specified port"};
     }
     // ------------------
+    std::cout << "*********** TCP Server ***********\n\n";
     std::cout << "Server is Online.\n";
 
     if (listen(socket_FD, max_clients) == -1)
@@ -121,7 +122,7 @@ std::expected<bool, TCPServerException> TCPServer::start_server()
     return std::expected<bool, TCPServerException> {true};
 }
 
-void TCPServer::clean_up_socket_epoll(int socket_FD, int epoll_FD)
+void TCPServer::clean_up_socket_epoll(int socket_FD, int epoll_FD) noexcept
 {
     if (socket_FD != -1)
     {
@@ -133,7 +134,7 @@ void TCPServer::clean_up_socket_epoll(int socket_FD, int epoll_FD)
     }
 }
 
-void TCPServer::handle_client(int client_FD, int buffer_size)
+void TCPServer::handle_client(int client_FD, int buffer_size) noexcept
 {
     char buffer[buffer_size];
     while (true)

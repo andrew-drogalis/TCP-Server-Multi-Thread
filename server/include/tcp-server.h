@@ -19,11 +19,11 @@ class TCPServer
 
     TCPServer(int port, int max_events, int max_clients, int buffer_size);
 
-    std::expected<bool, TCPServerException> start_server();
+    [[nodiscard]] std::expected<bool, TCPServerException> start_server() noexcept;
 
-    void clean_up_socket_epoll(int socket_FD, int epoll_FD);
+    void clean_up_socket_epoll(int socket_FD, int epoll_FD) noexcept;
 
-    static void handle_client(int clientFd, int buffer_size);
+    static void handle_client(int clientFd, int buffer_size) noexcept;
 
   private:
     int port, max_events, max_clients, buffer_size;

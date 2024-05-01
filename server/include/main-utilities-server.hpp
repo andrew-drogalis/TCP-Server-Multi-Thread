@@ -101,7 +101,7 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS,
             return false;
         }
     }
-    std::print("Port: {}, Max Clients: {}, Max Events: {}, Buffer Size: {}", PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE);
+    std::print("Port: {}, Max Clients: {}, Max Events: {}, Buffer Size: {}\n\n", PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE);
     // ------------------
     return true;
 }

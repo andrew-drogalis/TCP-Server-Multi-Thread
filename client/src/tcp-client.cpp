@@ -22,7 +22,7 @@ namespace tcpclient
 
 TCPClient::TCPClient(std::string ip_address, int port, int buffer_size) : ip_address(ip_address), port(port), buffer_size(buffer_size) {}
 
-std::expected<bool, TCPClientException> TCPClient::start_client()
+std::expected<bool, TCPClientException> TCPClient::start_client() noexcept
 {
     int socket_FD = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_FD == -1)
@@ -43,6 +43,7 @@ std::expected<bool, TCPClientException> TCPClient::start_client()
                                                         "Failed to open connection to IP Address on specified port"};
     }
     // ------------------
+    std::cout << "*********** TCP Client ***********\n\n";
     std::cout << "Established Connection to: " << inet_ntoa(server.sin_addr) << " on port: " << port << "\n\n";
 
     char buf[buffer_size];
@@ -80,7 +81,7 @@ std::expected<bool, TCPClientException> TCPClient::start_client()
     return std::expected<bool, TCPClientException> {true};
 }
 
-void TCPClient::clean_up_socket(int socket_FD)
+void TCPClient::clean_up_socket(int socket_FD) noexcept
 {
     if (socket_FD != -1)
     {

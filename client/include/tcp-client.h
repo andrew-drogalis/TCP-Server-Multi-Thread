@@ -20,9 +20,9 @@ class TCPClient
 
     TCPClient(std::string ip_address, int port, int buffer_size);
 
-    std::expected<bool, TCPClientException> start_client();
+    [[nodiscard]] std::expected<bool, TCPClientException> start_client() noexcept;
 
-    void clean_up_socket(int socket_FD);
+    void clean_up_socket(int socket_FD) noexcept;
 
   private:
     std::string ip_address;

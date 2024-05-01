@@ -79,7 +79,7 @@ bool validateMainParameters(int argc, char* argv[], std::string& IP_ADDRESS, int
             return false;
         }
     }
-    std::print("IP Address: {}, Port: {}, Buffer Size: {}", IP_ADDRESS, PORT, BUFFER_SIZE);
+    std::print("IP Address: {}, Port: {}, Buffer Size: {}\n\n", IP_ADDRESS, PORT, BUFFER_SIZE);
     // ------------------
     return true;
 }

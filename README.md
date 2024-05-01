@@ -3,30 +3,81 @@
 
 ## Table of Contents
 
-* [Getting Started](#Getting-Started)
 * [About the Project](#About-the-Project)
 * [Running the Client and Server](#Running-the-Client-and-Server)
+* [Background Information](#Background-Information)
+* [Dependencies](#Dependencies)
 * [Building Executable](#Building-Executable)
 * [License](#License)
 * [Contributing](#Contribution)
 
-## Getting Started
-
 ## About the Project
+
+This project uses a multithread TCP server with an epoll instance to handle multiple connections, each on an individual thread. The goal was to apply modern Linux socket programming techniques, similar to those of real-world large scale applications.
+
+Older methods, such as poll and select, are not scale-able as they perform operations with a linear time complexity. Epoll utilized an RB-Tree (Red Black Tree) under the hood to keep track of the file descriptors. 
 
 ## Running the Client and Server
 
+The TCP-Client takes (3) arguments which override the default values.
+
+```bash
+./TCP-Client -i [IP Address] -p [Port Number] -b [Buffer Size]
+```
+
+```text
+IP Address: Standard IPv4 Address
+Port Number: Valid Port Number 0 - 65535
+Buffer Size: Int > 0;
+```
+
+The Multithread-TCP-Server takes (4) arguments and can be passed to the executable with the following flags.
+
+```bash
+./Multithread-TCP-Server -p [Port Number] -c [Max Clients] -e [Max Events] -b [Buffer Size]
+```
+
+```text
+Port Number: Valid Port Number 0 - 65535
+Max Clients, Max Events, Buffer Size: Int > 0;
+```
+
+The server should be initialized prior to the client, otherwise the client will fail to connect since there is no server online. The resulting client / server program is shown below.
+
+<!-- <img src="https://raw.githubusercontent.com/andrew-drogalis/Desktop-Database-Editor/main/assets/PM-DB-Online.PNG" alt="Database-Online-Screenshot" style="width: 850px; padding-top: 10px;"> -->
+
+## Background Information
+
+The following is a diagram of the OSI (Open System Interconnection) model. The TCP is located on the 4th layer (Transport).
+
+<!-- <img src="https://raw.githubusercontent.com/andrew-drogalis/Desktop-Database-Editor/main/assets/PM-DB-Online.PNG" alt="Database-Online-Screenshot" style="width: 850px; padding-top: 10px;"> -->
+
+Source: https://vichargrave.github.io/programming/tcp-ip-network-programming-design-patterns-in-cpp/
+<!-- 
+<img src="https://raw.githubusercontent.com/andrew-drogalis/Desktop-Database-Editor/main/assets/PM-DB-Online.PNG" alt="Database-Online-Screenshot" style="width: 850px; padding-top: 10px;"> -->
+
+Source: https://vichargrave.github.io/programming/tcp-ip-network-programming-design-patterns-in-cpp/
+<!-- 
+<img src="https://raw.githubusercontent.com/andrew-drogalis/Desktop-Database-Editor/main/assets/PM-DB-Online.PNG" alt="Database-Online-Screenshot" style="width: 850px; padding-top: 10px;"> -->
+
+Source:  https://medium.com/@avocadi/what-is-epoll-9bbc74272f7c
+
+## Dependencies
+This repository contains a .devcontainer directory. The .devcontainer has all the required dependencies and can be run inside Docker with the Dev Containers VSCode extension.
+
+#### User Install Required
+
+- [Google Tests](https://github.com/google/googletest) | Testing Only
 
 ## Building Executable
 
-``` $ cd server
-    $ mkdir build
-    $ cmake -S . -B build
-    $ cmake --build build --target Multithread-TCP-Server
-    $ cd .. && cd client
-    $ mkdir build
-    $ cmake -S . -B build
-    $ cmake --build build --target TCP-Client
+``` 
+$ cd server && mkdir build
+$ cmake -S . -B build
+$ cmake --build build --target Multithread-TCP-Server
+$ cd .. && cd client && mkdir build
+$ cmake -S . -B build
+$ cmake --build build --target TCP-Client
 ```
 
 ## License
