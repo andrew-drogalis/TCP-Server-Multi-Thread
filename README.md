@@ -44,21 +44,25 @@ Max Clients, Max Events, Buffer Size: Int > 0;
 
 The server should be initialized prior to the client, otherwise the client will fail to connect since there is no server online. The resulting client / server program is shown below.
 
-<!-- <img src="https://raw.githubusercontent.com/andrew-drogalis/Desktop-Database-Editor/main/assets/PM-DB-Online.PNG" alt="Database-Online-Screenshot" style="width: 850px; padding-top: 10px;"> -->
+<img src="https://raw.githubusercontent.com/andrew-drogalis/Multithread-TCP-Server/main/assets/TCP-Server_Client.png" alt="TCP Client Server Terminal" style="width: 850px; padding-top: 10px;"> 
 
 ## Background Information
 
 The following is a diagram of the OSI (Open System Interconnection) model. The TCP is located on the 4th layer (Transport).
 
-<!-- <img src="https://raw.githubusercontent.com/andrew-drogalis/Desktop-Database-Editor/main/assets/PM-DB-Online.PNG" alt="Database-Online-Screenshot" style="width: 850px; padding-top: 10px;"> -->
+<img src="https://raw.githubusercontent.com/andrew-drogalis/Multithread-TCP-Server/main/assets/Network-Stack-Models1.png" alt="Database-Online-Screenshot" style="width: 500px; padding-top: 10px;">
 
 Source: https://vichargrave.github.io/programming/tcp-ip-network-programming-design-patterns-in-cpp/
-<!-- 
-<img src="https://raw.githubusercontent.com/andrew-drogalis/Desktop-Database-Editor/main/assets/PM-DB-Online.PNG" alt="Database-Online-Screenshot" style="width: 850px; padding-top: 10px;"> -->
+
+The diagram below demonstrates the order of operations to initialize a standard server / client TCP application. 
+
+<img src="https://raw.githubusercontent.com/andrew-drogalis/Multithread-TCP-Server/main/assets/Socket-Workflow.png" alt="Socket Workflow" style="width: 500px; padding-top: 10px;">
 
 Source: https://vichargrave.github.io/programming/tcp-ip-network-programming-design-patterns-in-cpp/
-<!-- 
-<img src="https://raw.githubusercontent.com/andrew-drogalis/Desktop-Database-Editor/main/assets/PM-DB-Online.PNG" alt="Database-Online-Screenshot" style="width: 850px; padding-top: 10px;"> -->
+
+The epoll instance is apart of the Linux kernel. Once there are file descriptors in the ready list, epoll_wait returns the number of FD's that are ready.
+
+<img src="https://raw.githubusercontent.com/andrew-drogalis/Multithread-TCP-Server/main/assets/epoll_ready.png" alt="Database-Online-Screenshot" style="width: 500px; padding-top: 10px;">
 
 Source:  https://medium.com/@avocadi/what-is-epoll-9bbc74272f7c
 
