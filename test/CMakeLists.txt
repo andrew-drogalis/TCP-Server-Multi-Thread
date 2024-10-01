@@ -31,10 +31,10 @@ add_executable(
   all_tests
   unit_test.cpp
   functional_test.cpp
-  ${PARENT_DIR}/client/src/tcp-client-exception.cpp
-  ${PARENT_DIR}/client/src/tcp-client.cpp
-  ${PARENT_DIR}/server/src/tcp-server-exception.cpp
-  ${PARENT_DIR}/server/src/tcp-server.cpp)
+  ${PARENT_DIR}/client/src/client-exception.cpp
+  ${PARENT_DIR}/client/src/client.cpp
+  ${PARENT_DIR}/server/src/server-exception.cpp
+  ${PARENT_DIR}/server/src/server.cpp)
 
 target_include_directories(all_tests PRIVATE ${PARENT_DIR}/client/include ${PARENT_DIR}/server/include)
 
