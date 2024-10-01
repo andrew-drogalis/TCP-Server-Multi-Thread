@@ -1,23 +1,28 @@
-// Copyright 2024, Andrew Drogalis
-// GNU License
+// Andrew Drogalis Copyright (c) 2024, GNU 3.0 Licence
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 #include <iostream>// for operator<<, basic_ostream, cout
 #include <string>  // for basic_string
 
-#include "main-utilities-client.hpp"// for validateMainParameters
-#include "tcp-client.h"             // for TCPClient
+#include "client.h"                 // for Client
+#include "main-utilities-client.hpp"// for validateClientParameters
 
 int main(int argc, char* argv[])
 {
     std::string IP_ADDRESS = "127.0.0.1";
     int PORT = 54000, BUFFER_SIZE = 1024;
+    char TCP_UDP   = 'U';
+    bool BENCHMARK = true;
 
-    if (! tcpclient::validateMainParameters(argc, argv, IP_ADDRESS, PORT, BUFFER_SIZE))
+    if (! dro::validateClientParameters(argc, argv, IP_ADDRESS, PORT, BUFFER_SIZE, TCP_UDP, BENCHMARK))
     {
         return 1;
     }
-    // -------------------
-    tcpclient::TCPClient tcpClient {IP_ADDRESS, PORT, BUFFER_SIZE};
+    dro::Client tcpClient {IP_ADDRESS, PORT, BUFFER_SIZE, TCP_UDP, BENCHMARK};
 
     auto tcp_client_response = tcpClient.start_client();
 
@@ -29,6 +34,5 @@ int main(int argc, char* argv[])
     }
 
     std::cout << "\nConnection Closed Successfully.\n";
-    // -------------------
     return 0;
 }

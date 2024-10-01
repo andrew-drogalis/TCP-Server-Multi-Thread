@@ -1,5 +1,9 @@
-// Copyright 2024, Andrew Drogalis
-// GNU License
+// Andrew Drogalis Copyright (c) 2024, GNU 3.0 Licence
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 #include <unistd.h>// for optarg, getopt
 
@@ -9,14 +13,17 @@
 #include <stdexcept>// for invalid_argument
 #include <string>   // for stoi, basic_string
 
-namespace tcpclient
+namespace dro
 {
 
-bool validateMainParameters(int argc, char* argv[], std::string& IP_ADDRESS, int& PORT, int& BUFFER_SIZE)
+void printClientUsage() { std::print("Usage: -i [IP Address] -p [Port Number] -b [Buffer Size] -t [TCP/UDP] -m [Benchmark]\n"); }
+
+bool validateClientParameters(int argc, char* argv[], std::string& IP_ADDRESS, int& PORT, int& BUFFER_SIZE, char& TCP_UDP, bool& BENCHMARK)
 {
-    if (argc > 7)
+    if (argc > 11)
     {
-        std::cerr << "Too Many Arguments - Only (3) Arguments: -i [IP Address] -p [Port Number] -b [Buffer Size]\n";
+        std::cerr << "Too Many Arguments - Only (5) Arguments\n";
+        printClientUsage();
         return false;
     }
     if (argc == 1)
@@ -27,7 +34,7 @@ bool validateMainParameters(int argc, char* argv[], std::string& IP_ADDRESS, int
     std::regex ipv4("(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])");
 
     int c;
-    while ((c = getopt(argc, argv, "p:b:i:")) != -1)
+    while ((c = getopt(argc, argv, "p:b:i:t:m:")) != -1)
     {
         switch (c)
         {
@@ -74,14 +81,26 @@ bool validateMainParameters(int argc, char* argv[], std::string& IP_ADDRESS, int
             }
             break;
         }
+        case 't': {
+            TCP_UDP = *optarg;
+            if (TCP_UDP != 'T' && TCP_UDP != 'U')
+            {
+                std::cerr << "Provide either 'T' or 'U' for TCP/UDP.";
+                return false;
+            }
+            break;
+        }
+        case 'm': {
+            BENCHMARK = (*optarg == '0') ? false : true;
+            break;
+        }
         default:
-            std::cerr << "Incorrect Argument. Flags are -i [IP Address] -p [Port Number] -b [Buffer Size]\n";
+            std::cerr << "Incorrect Argument.\n";
+            printClientUsage();
             return false;
         }
     }
-    std::print("IP Address: {}, Port: {}, Buffer Size: {}\n\n", IP_ADDRESS, PORT, BUFFER_SIZE);
-    // ------------------
     return true;
 }
 
-}// namespace tcpclient
+}// namespace dro
