@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(
-  Multithread-Server
+  Multithreaded-Server
   VERSION 1.0.0
   DESCRIPTION ""
   LANGUAGES CXX)
