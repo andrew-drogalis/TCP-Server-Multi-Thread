@@ -50,6 +50,14 @@ The server should be initialized prior to the client, otherwise the client will 
 
 ## Benchmarks
 
+These benchmarks were taken on a (4) core Intel(R) Core(TM) i5-9300H CPU @ 2.40GHz with isolcpus on cores 2 and 3. The linux kernel is v6.10.11-200.fc40.x86_64 and compiled with gcc version 14.2.1.
+
+
+| Message Type | messages / sec | latency (ms) |
+| ------------ | -------------- | ------------ |
+| UDP          | 71,318         | 14           |
+| TCP          | 58,539         | 17           |
+
 ## Background Information
 
 The following is a diagram of the OSI (Open System Interconnection) model. The TCP and UDP is located on the 4th layer (Transport).
