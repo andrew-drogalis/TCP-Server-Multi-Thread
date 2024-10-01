@@ -31,7 +31,6 @@ include(${PARENT_DIR}/cmake/Sanitizers.cmake)
 include(${PARENT_DIR}/cmake/StaticAnalyzers.cmake)
 include(${PARENT_DIR}/cmake/Tests.cmake)
 include(${PARENT_DIR}/cmake/PreventInSourceBuilds.cmake)
-include(${PARENT_DIR}/cmake/ClangFormat.cmake)
 
 myproject_assure_out_of_source_builds()
 myproject_set_project_warnings(
@@ -41,8 +40,6 @@ myproject_set_project_warnings(
   ""
   ""
   "X")
-
-add_clang_format_target(RUN_CLANG-FORMAT ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_compile_options(-pipe -fPIC)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")

@@ -21,7 +21,6 @@ include_directories(
 include(${PARENT_DIR}/cmake/CompilerWarnings.cmake)
 include(${PARENT_DIR}/cmake/Tests.cmake)
 include(${PARENT_DIR}/cmake/PreventInSourceBuilds.cmake)
-include(${PARENT_DIR}/cmake/ClangFormat.cmake)
 
 # ==========================================
 # UNIT TESTS
@@ -47,7 +46,6 @@ target_link_libraries(
 # ==========================================
 myproject_assure_out_of_source_builds()
 myproject_set_project_warnings("all_tests" TRUE "X" "" "" "X")
-add_clang_format_target(RUN_CLANG-FORMAT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # we cannot analyse results without gcov
 find_program(GCOV_PATH gcov)
