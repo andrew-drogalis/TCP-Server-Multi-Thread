@@ -1,25 +1,28 @@
-// Copyright 2024, Andrew Drogalis
-// GNU License
+// Andrew Drogalis Copyright (c) 2024, GNU 3.0 Licence
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 #include <iostream>// for operator<<, basic_ostream, cout
 
-#include "main-utilities-server.hpp"// for validateMainParameters
-#include "tcp-server.h"             // for TCPServer
+#include "main-utilities-server.hpp"// for validateServerParameters
+#include "server.h"                 // for Server
 
 int main(int argc, char* argv[])
 {
     // User Default Values
     int PORT = 54000, MAX_CLIENTS = 10, MAX_EVENTS = 10, BUFFER_SIZE = 1024;
+    char TCP_UDP = 'U';
 
-    if (! tcpserver::validateMainParameters(argc, argv, PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE))
+    if (! dro::validateServerParameters(argc, argv, PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE, TCP_UDP))
     {
         return 1;
     }
-    // -------------------
-    tcpserver::TCPServer tcpServ {PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE};
 
+    dro::Server tcpServ {PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE, TCP_UDP};
     auto tcp_server_response = tcpServ.start_server();
-
     if (! tcp_server_response)
     {
         std::cout << "Error Location: " << tcp_server_response.error().where() << '\n';
@@ -28,6 +31,5 @@ int main(int argc, char* argv[])
     }
 
     std::cout << "\nConnection Closed Successfully.\n";
-    // -------------------
     return 0;
 }

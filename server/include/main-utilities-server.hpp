@@ -1,5 +1,9 @@
-// Copyright 2024, Andrew Drogalis
-// GNU License
+// Andrew Drogalis Copyright (c) 2024, GNU 3.0 Licence
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
 #include <unistd.h>// for optarg, getopt
 
@@ -8,14 +12,17 @@
 #include <stdexcept>// for invalid_argument
 #include <string>   // for stoi, basic_string
 
-namespace tcpserver
+namespace dro
 {
 
-bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS, int& MAX_EVENTS, int& BUFFER_SIZE)
+void printServerUsage() { std::print("Usage: -p [Port Number] -c [Max Clients] -e [Max Events] -b [Buffer Size] -t [TCP/UDP]\n"); }
+
+bool validateServerParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS, int& MAX_EVENTS, int& BUFFER_SIZE, char& TCP_UDP)
 {
-    if (argc > 9)
+    if (argc > 11)
     {
-        std::cerr << "Too Many Arguments - Only (4) Arguments: -p [Port Number] -c [Max Clients] -e [Max Events] -b [Buffer Size]\n";
+        std::cerr << "Too Many Arguments - Only (5) Arguments\n";
+        printServerUsage();
         return false;
     }
     if (argc == 1)
@@ -24,7 +31,7 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS,
     }
 
     int c;
-    while ((c = getopt(argc, argv, "p:c:e:b:")) != -1)
+    while ((c = getopt(argc, argv, "p:c:e:b:t:")) != -1)
     {
         switch (c)
         {
@@ -96,14 +103,22 @@ bool validateMainParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS,
             }
             break;
         }
+        case 't': {
+            TCP_UDP = *optarg;
+            if (TCP_UDP != 'T' && TCP_UDP != 'U')
+            {
+                std::cerr << "Provide either 'T' or 'U' for TCP/UDP.";
+                return false;
+            }
+            break;
+        }
         default:
-            std::cerr << "Incorrect Argument. Flags are -p [Port Number] -c [Max Clients] -e [Max Events] -b [Buffer Size]\n";
+            std::cerr << "Incorrect Argument.\n";
+            printServerUsage();
             return false;
         }
     }
-    std::print("Port: {}, Max Clients: {}, Max Events: {}, Buffer Size: {}\n\n", PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE);
-    // ------------------
     return true;
 }
 
-}// namespace tcpserver
+}// namespace dro
