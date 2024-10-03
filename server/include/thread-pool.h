@@ -9,6 +9,7 @@
 #define DRO_THREAD_POOL_H
 
 #include <condition_variable>
+#include <cstdint>
 #include <functional>
 #include <mutex>
 #include <queue>
@@ -23,16 +24,16 @@ class ThreadPool
   public:
     ThreadPool() = default;
 
-    void Start();
+    void start(uint16_t numThreads = 0);
 
-    void QueueJob(std::function<void()> const& job);
+    void queue_job(std::function<void()> const& job);
 
-    void Stop();
+    void stop();
 
-    bool Busy();
+    bool busy();
 
   private:
-    void ThreadLoop();
+    void thread_loop();
 
     std::vector<std::thread> threads;
     bool should_terminate = false;

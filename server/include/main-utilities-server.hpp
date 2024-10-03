@@ -7,6 +7,7 @@
 
 #include <unistd.h>// for optarg, getopt
 
+#include <cstdint>  // for uint16_t
 #include <iostream> // for operator<<, basic_ostream, cerr, cout
 #include <print>    // for print
 #include <stdexcept>// for invalid_argument
@@ -17,7 +18,8 @@ namespace dro
 
 void printServerUsage() { std::print("Usage: -p [Port Number] -c [Max Clients] -e [Max Events] -b [Buffer Size] -t [TCP/UDP]\n"); }
 
-bool validateServerParameters(int argc, char* argv[], int& PORT, int& MAX_CLIENTS, int& MAX_EVENTS, int& BUFFER_SIZE, char& TCP_UDP)
+bool validateServerParameters(int argc, char* argv[], uint16_t& PORT, uint32_t& MAX_CLIENTS, uint32_t& MAX_EVENTS, uint32_t& BUFFER_SIZE,
+                              char& TCP_UDP)
 {
     if (argc > 11)
     {

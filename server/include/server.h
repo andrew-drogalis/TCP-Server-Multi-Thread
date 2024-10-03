@@ -8,11 +8,13 @@
 #ifndef DRO_SERVER_H
 #define DRO_SERVER_H
 
+#include <cstdint>
 #include <expected>// for expected
 
 #include <netinet/in.h>// for sockaddr_in
 
 #include "server-exception.h"// for ServerException
+#include "thread-pool.h"     // for ThreadPool
 
 namespace dro
 {
@@ -22,7 +24,7 @@ class Server
   public:
     Server() = default;
 
-    Server(int port, int max_events, int max_clients, int buffer_size, char tcp_udp);
+    Server(uint16_t port, uint32_t max_events, uint32_t max_clients, uint32_t buffer_size, char tcp_udp);
 
     [[nodiscard]] std::expected<bool, ServerException> start_server() noexcept;
 
@@ -38,6 +40,7 @@ class Server
     int port_, max_events_, max_clients_, buffer_size_;
     char tcp_udp_;
     struct sockaddr_in server_;
+    ThreadPool threadPool_;
 };
 
 }// namespace dro

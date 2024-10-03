@@ -8,6 +8,7 @@
 #include "thread-pool.h"
 
 #include <condition_variable>
+#include <cstdint>
 #include <functional>
 #include <mutex>
 #include <queue>
@@ -17,14 +18,22 @@
 namespace dro
 {
 
-// Future Optimization
-void ThreadPool::Start()
+void ThreadPool::start(uint16_t numThreads)
 {
-    int const maxThreads = std::thread::hardware_concurrency();
-    for (int i {}; i < maxThreads; ++i) { threads.emplace_back(std::thread(&ThreadPool::ThreadLoop, this)) }
+
+    uint16_t maxThreads;
+    if (numThreads)
+    {
+        maxThreads = numThreads;
+    }
+    else
+    {
+        maxThreads = std::thread::hardware_concurrency();
+    }
+    for (uint16_t i {}; i < maxThreads; ++i) { threads.emplace_back(std::thread(&ThreadPool::thread_loop, this)); }
 }
 
-void ThreadPool::ThreadLoop()
+void ThreadPool::thread_loop()
 {
     while (true)
     {
@@ -43,7 +52,7 @@ void ThreadPool::ThreadLoop()
     }
 }
 
-void ThreadPool::QueueJob(std::function<void()> const& job)
+void ThreadPool::queue_job(std::function<void()> const& job)
 {
     {
         std::unique_lock<std::mutex> lock(queue_mutex);
@@ -52,7 +61,7 @@ void ThreadPool::QueueJob(std::function<void()> const& job)
     mutex_condition.notify_one();
 }
 
-bool ThreadPool::Busy()
+bool ThreadPool::busy()
 {
     bool poolbusy;
     {
@@ -62,7 +71,7 @@ bool ThreadPool::Busy()
     return poolbusy;
 }
 
-void ThreadPool::Stop()
+void ThreadPool::stop()
 {
     {
         std::unique_lock<std::mutex> lock(queue_mutex);

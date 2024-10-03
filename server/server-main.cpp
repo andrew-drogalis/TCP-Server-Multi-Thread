@@ -5,6 +5,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+#include <cstdint> // for uint16_t
 #include <iostream>// for operator<<, basic_ostream, cout
 
 #include "main-utilities-server.hpp"// for validateServerParameters
@@ -13,7 +14,8 @@
 int main(int argc, char* argv[])
 {
     // User Default Values
-    int PORT = 54000, MAX_CLIENTS = 10, MAX_EVENTS = 10, BUFFER_SIZE = 1024;
+    uint16_t PORT        = 54000;
+    uint32_t MAX_CLIENTS = 10, MAX_EVENTS = 10, BUFFER_SIZE = 1024;
     char TCP_UDP = 'U';
 
     if (! dro::validateServerParameters(argc, argv, PORT, MAX_CLIENTS, MAX_EVENTS, BUFFER_SIZE, TCP_UDP))

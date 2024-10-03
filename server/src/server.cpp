@@ -13,18 +13,20 @@
 #include <sys/socket.h>// for AF_INET, accept, bind, listen, socket, SOCK_...
 #include <unistd.h>    // for close, read, write
 
-#include <chrono>         // for high_resolution_clock
+#include <chrono>// for high_resolution_clock
+#include <cstdint>
 #include <expected>       // for expected
 #include <iostream>       // for operator<<, basic_ostream, cout
 #include <source_location>// for source_location
 #include <thread>         // for thread
 
 #include "server-exception.h"// for ServerException
+#include "thread-pool.h"     // for ThreadPool
 
 namespace dro
 {
 
-Server::Server(int port, int max_events, int max_clients, int buffer_size, char tcp_udp)
+Server::Server(uint16_t port, uint32_t max_events, uint32_t max_clients, uint32_t buffer_size, char tcp_udp)
     : port_(port), max_events_(max_events), max_clients_(max_clients), buffer_size_(buffer_size), tcp_udp_(tcp_udp)
 {
 }
@@ -96,6 +98,7 @@ std::expected<bool, ServerException> Server::run_tcp_server(int socket_FD) noexc
                                                      "Failed to add server socket to epoll instance."};
     }
     std::cout << "Listening for connections on Port: " << port_ << '\n';
+    threadPool_.start();
 
     while (true)
     {
@@ -133,20 +136,13 @@ std::expected<bool, ServerException> Server::run_tcp_server(int socket_FD) noexc
             }
             else
             {
-                // Eventually Optimize this with Thread Pool
-                int client_FD = events[i].data.fd;
-                if (i == 0)
-                {
-                    dro::Server::handle_client(client_FD, buffer_size_);
-                }
-                else
-                {
-                    std::thread client_thread(handle_client, client_FD, buffer_size_);
-                    client_thread.detach();
-                }
+                int client_FD         = events[i].data.fd;
+                uint32_t local_buffer = buffer_size_;
+                threadPool_.queue_job([&client_FD, &local_buffer] { dro::Server::handle_client(client_FD, local_buffer); });
             }
         }
     }
+    threadPool_.stop();
     clean_up_socket_epoll(socket_FD, epoll_FD);
     return std::expected<bool, ServerException> {true};
 }

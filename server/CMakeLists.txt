@@ -12,7 +12,12 @@ set(CMAKE_BUILD_TYPE "Debug")
 include(GNUInstallDirs)
 
 # Build Executable
-add_executable(${PROJECT_NAME} server-main.cpp src/server.cpp src/server-exception.cpp)
+add_executable(
+  ${PROJECT_NAME}
+  server-main.cpp
+  src/server.cpp
+  src/server-exception.cpp
+  src/thread-pool.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 
