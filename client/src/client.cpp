@@ -15,6 +15,7 @@
 #include <unistd.h>    // for close
 
 #include <chrono>         // for high_resolution_clock
+#include <cstdint>        // for uint16_t
 #include <cstring>        // for memcpy, memset
 #include <expected>       // for expected
 #include <iostream>       // for operator<<, basic_ostream, cout, basic_ostre...
@@ -26,7 +27,7 @@
 namespace dro
 {
 
-Client::Client(std::string ip_address, int port, int buffer_size, char tcp_udp, bool benchmark)
+Client::Client(std::string ip_address, uint16_t port, uint32_t buffer_size, char tcp_udp, bool benchmark)
     : ip_address_(ip_address), port_(port), buffer_size_(buffer_size), tcp_udp_(tcp_udp), benchmark_(benchmark)
 {
 }

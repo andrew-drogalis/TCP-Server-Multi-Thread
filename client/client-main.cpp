@@ -5,6 +5,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+#include <cstdint> // for uint16_t
 #include <iostream>// for operator<<, basic_ostream, cout
 #include <string>  // for basic_string
 
@@ -14,9 +15,10 @@
 int main(int argc, char* argv[])
 {
     std::string IP_ADDRESS = "127.0.0.1";
-    int PORT = 54000, BUFFER_SIZE = 1024;
-    char TCP_UDP   = 'U';
-    bool BENCHMARK = true;
+    uint16_t PORT          = 54000;
+    uint32_t BUFFER_SIZE   = 1024;
+    char TCP_UDP           = 'U';
+    bool BENCHMARK         = true;
 
     if (! dro::validateClientParameters(argc, argv, IP_ADDRESS, PORT, BUFFER_SIZE, TCP_UDP, BENCHMARK))
     {

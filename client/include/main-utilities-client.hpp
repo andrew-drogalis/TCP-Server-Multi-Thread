@@ -7,6 +7,7 @@
 
 #include <unistd.h>// for optarg, getopt
 
+#include <cstdint>  // for uint16_t
 #include <iostream> // for operator<<, basic_ostream, cerr, cout
 #include <print>    // for print
 #include <regex>    // for regex, regex_match
@@ -18,7 +19,7 @@ namespace dro
 
 void printClientUsage() { std::print("Usage: -i [IP Address] -p [Port Number] -b [Buffer Size] -t [TCP/UDP] -m [Benchmark]\n"); }
 
-bool validateClientParameters(int argc, char* argv[], std::string& IP_ADDRESS, int& PORT, int& BUFFER_SIZE, char& TCP_UDP, bool& BENCHMARK)
+bool validateClientParameters(int argc, char* argv[], std::string& IP_ADDRESS, uint16_t& PORT, uint32_t& BUFFER_SIZE, char& TCP_UDP, bool& BENCHMARK)
 {
     if (argc > 11)
     {

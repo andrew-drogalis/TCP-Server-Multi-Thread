@@ -10,6 +10,7 @@
 
 #include <expected>// for expected
 #include <string>  // for basic_string
+#include <cstdint> // for uint16_t
 
 #include <netinet/in.h>// for sockaddr_in
 
@@ -24,7 +25,7 @@ class Client
   public:
     Client() = default;
 
-    Client(std::string ip_address, int port, int buffer_size, char tcp_udp, bool benchmark);
+    Client(std::string ip_address, uint16_t port, uint32_t buffer_size, char tcp_udp, bool benchmark);
 
     [[nodiscard]] std::expected<bool, ClientException> start_client() noexcept;
 

@@ -27,7 +27,7 @@ The Client takes (5) arguments which override the default values.
 ```text
 IP Address: Standard IPv4 Address
 Port Number: Valid Port Number 0 - 65535
-Buffer Size: Int > 0;
+Buffer Size: uint32_t;
 TCP/UDP: Char T or U;
 Benchmark: bool;
 ```
@@ -40,7 +40,7 @@ The Multithreaded-Server takes (5) arguments and can be passed to the executable
 
 ```text
 Port Number: Valid Port Number 0 - 65535
-Max Clients, Max Events, Buffer Size: Int > 0;
+Max Clients, Max Events, Buffer Size: uint32_t;
 TCP/UDP: Char T or U;
 ```
 
