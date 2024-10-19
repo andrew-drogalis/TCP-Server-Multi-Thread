@@ -1,20 +1,15 @@
 # Multithreaded TCP / UDP Server
 
-## Table of Contents
-
-- [About the Project](#About-the-Project)
-- [Running the Client and Server](#Running-the-Client-and-Server)
-- [Benchmarks](#Benchmarks)
-- [Background Information](#Background-Information)
-- [Dependencies](#Dependencies)
-- [Building Executable](#Building-Executable)
-- [License](#License)
-
-## About the Project
-
 This project uses a multithreaded server with an epoll instance to handle multiple connections, each on an individual thread. The goal was to apply modern Linux socket programming techniques, similar to those of real-world large scale applications.
 
 Older methods, such as poll and select, are not scale-able as they perform operations with a linear time complexity. Epoll utilized an RB-Tree (Red Black Tree) under the hood to keep track of the file descriptors.
+
+## Table of Contents
+
+- [Benchmarks](#Benchmarks)
+- [Implementation](#Implementation)
+- [Dependencies](#Dependencies)
+- [Building Executable](#Building-Executable)
 
 ## Running the Client and Server
 
@@ -58,7 +53,7 @@ These benchmarks were taken on a (4) core Intel(R) Core(TM) i5-9300H CPU @ 2.40G
 | UDP          | 71,318         | 14           |
 | TCP          | 58,539         | 17           |
 
-## Background Information
+## Implementation
 
 The following is a diagram of the OSI (Open System Interconnection) model. The TCP and UDP is located on the 4th layer (Transport).
 
